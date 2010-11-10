@@ -1,0 +1,381 @@
+========================================================================
+Release Notes for dpkg-scripts-1.66                          17 Mar 2009
+========================================================================
+
+* Fix dpkg-tmplocal option processing to stop at the first non-option
+  argument.
+
+========================================================================
+Release Notes for dpkg-scripts-1.65                          16 Mar 2009
+========================================================================
+
+* New dpkg-tmplocal options:
+   -v (--verbose)   Report each step as it is performed.
+   -p (--preserve)  Do not clean up temporary directory.
+   -d (--dir)       Bind a pre-existing directory on /usr/local (implies -p)
+   -o (--slash-opt) Bind on /opt instead of /usr/local.
+
+* Avoid overriding PATH in dpkg-wrap [chaos bug 454]
+
+========================================================================
+Release Notes for dpkg-scripts-1.64                          22 Apr 2008
+========================================================================
+
+* Do not hide default package dotkits from "use -l" by default.
+
+* Add 'dkhidedefault' package flag to hide default package dotkit.
+
+* Add 'dkhidemain' package flag to hide main package dotkit.
+  The 'dkhide' package flag hides both main and default packaged dotkits.
+
+========================================================================
+Release Notes for dpkg-scripts-1.63                          20 Apr 2008
+========================================================================
+
+* Fix bug in linkdata2 generation by dpkg-mkdeb where long symlink 
+  targets were encoded into base64 with line breaks.
+
+* Rewrite dpkg-verify in C for efficiency.  Work around linkdata2 files 
+  damaged as described above.
+
+* The dpkg-nonpackaged utility is replaced with dpkg-verify --unpackaged.
+
+========================================================================
+Release Notes for dpkg-scripts-1.62                          10 Apr 2008
+========================================================================
+
+* Added dpkg-mkdeb options: '-q basename', '-q basever', and -m metafile.
+  Fixed a bug in dpkg-mkdeb -q default.
+
+========================================================================
+Release Notes for dpkg-scripts-1.61 (includes .59, .60)      09 Apr 2008
+========================================================================
+
+* Change '-q names' query to return only non-default packages names, 
+  and add '-q default' package to return default package names.
+
+* Add regression test.
+
+========================================================================
+Release Notes for dpkg-scripts-1.58                          20 Mar 2008
+========================================================================
+
+* Add 'verboselog' flag to allow logging of arguments passed to wrapped
+  commands to be turned on for some packages.
+
+========================================================================
+Release Notes for dpkg-scripts-1.57                          28 Feb 2008
+========================================================================
+
+* Drop logging of arguments passed to wrapped commands.
+
+========================================================================
+Release Notes for dpkg-scripts-1.56                          21 Feb 2008
+========================================================================
+
+* Change hash-bang in all scripts to #!/bin/bash --posix to avoid
+  high shell startup overhead due to LC BASH_ENV setting.
+  Also make a couple of executable paths fully qualified in the 
+  dpkg-wrap call chain to avoid gratuitous PATH walks.
+
+* New dpkg-defaults script for listing package defaults.
+
+========================================================================
+Release Notes for dpkg-scripts-1.55                          15 Feb 2008
+========================================================================
+
+* Add dpkg-mkdeb -q names query to list all possible package names,
+  needed on build farm.
+
+* On failure, dpkg-mkdeb should not dump logfile to stderr if -v is 
+  already sending it there.
+
+* Do not build with 'notmproot' behavior by default.  Instead, populate
+  a private /usr/local for PKG_BUILDREQUIRES, but install to a regular
+  tmproot.  The -t option allows the system /usr/local to be used.
+
+* Change the dpkg-docreport color scheme to white and gray.
+
+========================================================================
+Release Notes for dpkg-scripts-1.54                          12 Feb 2008
+========================================================================
+
+* Support for symlinking lcc plugins in default pacakges.
+
+* New macros for use in package.conf: 
+  $lccdir - location of lcc plugin directory
+  $pkgname - package name (after subpackage processing)
+
+* Ensure file permissions are such that deb can be installed by non-root
+  user.
+
+* Define $pkg_default (set to PKG_DEFAULT value) in package.macros
+  metadata file.
+
+* Handle some corner cases in PKG_DEFAULT parsing.
+
+========================================================================
+Release Notes for dpkg-scripts-1.53                          01 Feb 2008
+========================================================================
+
+* Add 'dkhide' flag to generate #a in dotkit, which hides it from
+  the use -l listing.  Generate #a in default packages with or without
+  'dkhide' flag.
+
+* Add ${dotkitdir} macro which can be used instead of hard coding
+  /usr/local/etc/dotkit in package.conf's.
+
+* [dpkg-mkdeb] Make unknown entries in PKG_FLAGS fatal.
+  
+========================================================================
+Release Notes for dpkg-scripts-1.52                          30 Jan 2008
+========================================================================
+
+* Add 'nocheckwrap' flag to disable checking for existence of wrapped 
+  executables (e.g. to support wrapping of unpackaged files).
+
+* Add 'nodashwrap' flag to alter the naming of wrappers from name-version 
+  to nameversion.
+
+* Deprecate support for deb preinst, prerm, postinst, postrm scriptlets.
+
+* Remove vestigual support for deprecated 'alternatives'.
+
+========================================================================
+Release Notes for dpkg-scripts-1.51                          29 Jan 2008
+========================================================================
+
+* Handle optional [=version_glob] in PKG_BUILDREQUIRES package names.
+
+========================================================================
+Release Notes for dpkg-scripts-1.50                          28 Jan 2008
+========================================================================
+
+* Handle embedded spaces in packaged files and symbolic links.
+
+* Fix variant and subpackage query result to always be space-separated.
+
+========================================================================
+Release Notes for dpkg-scripts-1.49                          22 Jan 2008
+========================================================================
+
+* [dpkg-wrap] Exec command instead of forking.  Don't log exit code.
+
+* [dpkg-mkdeb] Enforce lower case package names rule again to avoid 
+  potential problems with apt.
+
+* [dpkg-mkdeb] New PKG_SECTION values: 'storage' and 'viz'.
+
+========================================================================
+Release Notes for dpkg-scripts-1.48                          17 Jan 2008
+========================================================================
+
+* [dpkg-mkdeb] Add support for "variants", which are similar to 
+  subpackages except the variant name is appended to the package version 
+  not the package name.  Add 'variantsconflict' flag which auto-generates
+  Conflicts: lines in the control file to make variants of the same
+  package explicitly conflict.
+
+* [dpkg-mkdeb] Add -q option to query package information.
+
+* [dpkg-runtests] Add -v option to display test log on failure.
+
+* [dpkg-testdeb] : Make list of package names prettier.
+  Run dpkg-runtests with -v if dpkg-testdeb is in verbose mode.
+
+========================================================================
+Release Notes for dpkg-scripts-1.47                          15 Jan 2008
+========================================================================
+
+* [dpkg-mkdeb] Implement -k option to preserve intermediate build 
+  files for examination.
+
+* [dpkg-mkdeb] Add PKG_CONFLICTS.
+
+* [dpkg-mkdeb] Allow PKG_NAME to contain mixed case.
+
+* [dpkg-mkdeb] Make apt installation errors fatal when installing 
+  dependencies for PKG_FLAGS=notmproot.
+
+========================================================================
+Release Notes for dpkg-scripts-1.46                          11 Jan 2008
+========================================================================
+
+* Fix a bug which prevented $dpkg_* variables from being defined for
+  tests and logging.
+
+========================================================================
+Release Notes for dpkg-scripts-1.45                          11 Jan 2008
+========================================================================
+
+* Fix a bug which prevented PKG_FLAGS=notmproot + PKG_BUILDREQUIRES
+  builds from completing.
+
+========================================================================
+Release Notes for dpkg-scripts-1.44                          09 Jan 2008
+========================================================================
+
+* Add dpkg-testdb, which can be used to run package unit tests against
+  a standalone deb installed with its dependencies into a private
+  /usr/lcoal.
+
+* Stop setting $dpkg_name, $dpkg_version, and $dpkg_prefix in dotkits
+  and instead set them in a new metadata file called 'macros' which is
+  sourced by dpkg-wrap and dpkg-logger.  These variables remain set
+  for test scripts as before.
+
+========================================================================
+Release Notes for dpkg-scripts-1.43                          09 Jan 2008
+========================================================================
+
+* Improve capability to verify symbolic link integrity.
+
+* [dpkg-mkdeb] Fix error handling when running with both
+  PKG_FLAGS=notmproot and PKG_BUILDREQUIRES
+
+* [dpkg-mkdeb] Sanitize PATH, LD_LIBRARY_PATH, and dotkit environment.
+
+* [dpkg-runtests] Clean up exit codes:
+  - If dpkg-runtests.sh itself failed, exit with code 1.
+  - If any tests failed, exit with code 2.
+  - Otherwise exit 0 even if test results include 'notest' or 'notrun'.
+
+* [dpkg-verify] Fix to run in a private /usr/local.
+
+* Added more regression tests.
+
+========================================================================
+Release Notes for dpkg-scripts-1.42                          08 Jan 2008
+========================================================================
+
+* [dpkg-mkdeb] Allow PKG_FLAGS=notmproot and PKG_BUILDREQUIRES.
+
+========================================================================
+Release Notes for dpkg-scripts-1.41                          05 Jan 2008
+========================================================================
+
+* [dpkg-mkdeb] Handle compressed man pages for wrappers.
+
+========================================================================
+Release Notes for dpkg-scripts-1.40                          04 Jan 2008
+========================================================================
+
+* [dpkg-wrap] Fix bug in dotkit initialization.  Wrappers for default
+  packages would fail with the "cowardly refusing to recurse within a dpkg 
+  wrapper script" error if dotkit was not already initialized.
+
+* [dpkg-wrap] Fine tune recursion detection so wrappers of one package 
+  can call wrappers of another package.
+
+* [dpkg-logger] Don't complain if dotkit doesn't set $dpkg_name or 
+  $dpkg_version, just omit that info from the log.  This might occur
+  in a custom (badly formed) dotkit.  Add -D option for debugging.
+
+* [dpkg-mkdeb] New package options:
+  - noldpath: if set, do not put LD_LIBRARY_PATH settings in dotkit
+  - dkmutex:  if set, dotkit should unuse other versions of the package
+
+* [dpkg-mkdeb] Try to include a man page symlink for each wrapper
+  added to /usr/local/bin.
+
+* Added more regression tests.
+
+========================================================================
+Release Notes for dpkg-scripts-1.39                          03 Jan 2008
+========================================================================
+
+* [dpkg-mkdeb] Change dependency string in default package from 
+  "name(=version)" to "name (= version)" to satisfy apt requirement.
+
+* [dpkg-mkdeb] Fix check_doc so references to dangling symlinks
+  are OK since package is not yet installed in destination.
+
+========================================================================
+Release Notes for dpkg-scripts-1.38                          03 Jan 2008
+========================================================================
+
+* [dpkg-mkdeb] Fix bug where dotkit was not altering PATH if bin 
+  directory was a symlink (as in default packages)
+
+* [dpkg-mkdeb] Enforce debian policy for package naming.
+
+* Added more tests to test suite.
+
+========================================================================
+Release Notes for dpkg-scripts-1.37                          03 Jan 2008
+========================================================================
+
+* [dpkg-mkdeb] Rename PKG_HELP to PKG_DK_HELP, PKG_CATEGORY to 
+  PKG_DK_CATEGORY.  Old names still work with warning.
+
+* [dpkg-mkdeb] Fix bug in PKG_DK_HELP expansion.
+
+* Added more tests to test suite.
+
+========================================================================
+Release Notes for dpkg-scripts-1.36                          28 Dec 2007
+========================================================================
+
+* [dpkg-mkdeb] Added support for PKG_WRAPPERS, an optional package.conf 
+  variable for automatically generating wrapper scripts in /usr/local/bin.
+  If the package has a version number embedded in the name, that number
+  will be added as an extension to the wrapper script.  For example,
+  a package named "icc-10.1.011" and PKG_WRAPPERS="icc,icpc" would include
+  wrappers named "icc-10.1.011" and "icpc-10.1.011".
+
+* [dpkg-mkdeb] Added support for PKG_DEFAULT, an optional package.conf
+  variable to trigger genereation of a "default" package after the main one.
+  This is a replacement for the "alternatives" method of selecting defaults 
+  for side-installed packages.  The default package derives from the main 
+  package as follows:
+
+                    Main package             Default package
+                    ------------             ---------------
+  package name      name-V                   name
+  package version   R                        default-V-R
+  deb file          name-V_R_arch.deb        name_default-V-R_arch.deb
+  doktit            name-V                   name
+  prefix            /path/name-V             /path/name (lndir tree)
+  wrappers          cmd-V                    cmd
+  
+* [dpkg-mkdeb] Added -v (verbose) option to show build progress.
+
+* [dpkg-mkdeb] Fix subpackage naming for side-installed packages.  
+  Previously, side installed subpackages would include the version before 
+  the subpackage name.  Now that is reversed.  For example: 
+
+   Old name: mvapich-0.9.9-shmem-gcc
+   New name: mvapich-shmem-gcc-0.9.9
+
+* [dpkg-mkdeb] Allow either spaces or commas in PKG_BUILDREQUIRES
+  and PKG_FLAGS instead of just spaces.
+
+* [dpkg-mkdeb] Allow suppression of automatic doktit creation with 
+  PKG_FLAGS="nodk".
+
+* [dpkg-mkdeb] Set "$lbindir" macro to /usr/local/bin.
+
+* [dpkg-mkdeb] Remove support for package.preinst, package.postinst,
+  package.prerm, package.postrm, package.conffiles files.  
+  Use PKG_preinst, PKG_postinst, PKG_prerm, PKG_postrm, PKG_conffiles
+  environment variables in package.conf if these scripts/files are needed 
+  in a package.  The files were not generally used because macros could
+  not be used in them.
+
+* [dpkg-wrap] Abort if dotkit fails to load or recursion is detected.
+
+* [dpkg-wrap] Fix bug in quoted argument handling.
+
+========================================================================
+Release Notes for dpkg-scripts-1.35                          13 Dec 2007
+========================================================================
+
+* [dpkg-mkdeb] Revert ill conceived implementation of PKG_WRAPPERS.
+
+* [dpkg-mkdeb] Do not put empty Depends: in control file if PKG_DEPENDS
+  is not set.
+
+* [dpkg-verify] Report broken symlinks as such instead of reporting them
+  as "missing"
+
+* Add RPM Requires: dpkg

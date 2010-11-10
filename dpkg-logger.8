@@ -1,0 +1,18 @@
+.TH dpkg-logger 8 "Release 1.0" "LLNL" "dpkg-logger"
+.SH NAME
+dpkg-logger \- log dotkit activity
+.SH SYNOPSIS
+.B dpkg-logger
+.I "[-d|-w]"
+log text ...
+.SH DESCRIPTION
+.B dpkg-logger
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-logger
+is called by package dotkits and
+.B dpkg-wrap(8)
+to log dotkit activity to syslog.
+.SH SEE ALSO
+dpkg(1), dpkg-mkdeb(8), dpkg-wrap(8)

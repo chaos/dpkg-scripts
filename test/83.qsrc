@@ -1,0 +1,10 @@
+XXX spurious debugging message in package.conf
+name: test-4.2
+version: 1
+basename: test
+basever: 4.2
+subpackages:
+variants:
+buildrequires:
+names: test-4.2_1
+default:

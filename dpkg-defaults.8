@@ -1,0 +1,20 @@
+.TH dpkg-defaults 8 "Release 1.0" "LLNL" "dpkg-defaults"
+.SH NAME
+dpkg-defaults \- list default packages
+.SH SYNOPSIS
+.B dpkg-defaults
+.I "[default_name]"
+.SH DESCRIPTION
+.B dpkg-defaults
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-defaults
+lists installed packages.  For side-installed packages with a default
+package selector, an asterisk is placed next to the version selected as
+the current default.
+.LP
+Default package names (or globs) may be listed on the command line
+to refine the query.
+.SH SEE ALSO
+dpkg-query(1), dpkg-mkdeb(8)

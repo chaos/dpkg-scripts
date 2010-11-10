@@ -1,0 +1,25 @@
+.TH dpkg-editdeb 8 "Release 1.0" "LLNL" "dpkg-editdeb"
+.SH NAME
+dpkg-editdeb \- manually edit deb package
+.SH SYNOPSIS
+.B dpkg-editdeb
+.I "package"
+.SH DESCRIPTION
+.B dpkg-editdeb
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-editdeb
+deconstructs a package into its component parts in a temp directory,
+then spawns a shell allowing you to examine and potentially modify it.
+If the shell exits with a zero exit code, the package contents are
+examined to find any changes, and if there are any, a new .deb file
+is created with the string ``edited'' and the date embedded in the version.
+.LP
+If the shell exits with a nonzero exit code, the edit is aborted and
+no new deb is created.
+.LP
+This tool is primarily intended for package debugging, not for producing
+packages for production use.
+.SH "SEE ALSO"
+dpkg-mkdeb(8)

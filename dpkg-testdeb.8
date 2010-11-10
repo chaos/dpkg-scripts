@@ -1,0 +1,48 @@
+.TH dpkg-testdeb 8 "Release 1.0" "LLNL" "dpkg-testdeb"
+.SH NAME
+dpkg-testdeb \- Install and test deb packages standalone
+.SH SYNOPSIS
+.B dpkg-testdeb
+.I [OPTIONS]
+.I "package [package]..."
+.SH DESCRIPTION
+.B dpkg-testdeb
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-testdeb
+allows verification of a single deb package by installing it and
+its dependencies inside a temporary /usr/local. 
+\fBdpkg-runtests\fR(8) is then invoked on the installed package for 
+a simple method to verify that the package works, and has properly 
+listed all run-time dependencies. \fBdpkg-verify\fR(8) may also be
+optionally run on the installed pacakge, though its use is debatable 
+on a freshly installed package.
+
+.SH "OPTIONS"
+.TP
+.BI "-h, --help"
+Display a summary of command-line options.
+.TP
+.BI "-v, --verbose"
+Run \fBdpkg-testdeb\fR in verbose mode.
+.TP
+.BI "-V, --verify"
+Run \fBdpkg-verify\fR(8) in addition to \fBdpkg-runtests\fR(8).
+
+.SH EXAMPLES
+.nf
+ > dpkg-testdeb ifort-10.1.011_3_linux-amd64.deb
+
+ dpkg-testdeb: Installing ifort-10.1.011 in temporary /usr/local...
+ dpkg-testdeb: Fixing up dependencies...
+ dpkg-testdeb: Running dpkg-runtests on installed packages...
+ dpkg-runtests: ifort-10.1.011                           ok
+ dpkg-runtests: Summary: all tests passed
+ dpkg-testdeb: Success
+.fi
+
+.SH "SEE ALSO"
+.BR dpkg-runtests (8), 
+.BR	dpkg-verify (8),
+.BR dpkg-tmplocal (8)

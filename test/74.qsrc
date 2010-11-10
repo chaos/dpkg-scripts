@@ -1,0 +1,9 @@
+name: foo-4.2
+version: 1
+basename: foo
+basever: 4.2
+subpackages:
+variants:
+buildrequires:
+names: foo-4.2_1
+default:

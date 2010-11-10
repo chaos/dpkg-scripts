@@ -1,0 +1,9 @@
+name: mixedCASE
+version: 1
+basename: mixedCASE
+basever:
+subpackages:
+variants:
+buildrequires:
+names: _1
+default:

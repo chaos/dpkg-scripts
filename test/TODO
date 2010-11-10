@@ -1,0 +1,6 @@
+* build package with PKG_BUILDREQUIRES and PKG_FLAGS=notmproot
+* install two packages whose names differ only in case, e.g. xyz vs "xYz"
+* validate logging via dotkit load and wrapper execution (need test hooks)
+* validate env vars/dotkits loaded during test script execution
+* validate test script execution return codes are properly handled
+* test META file parsing

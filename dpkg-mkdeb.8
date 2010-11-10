@@ -1,0 +1,365 @@
+.TH dpkg-mkdeb 8 "Release 1.0" "LLNL" "dpkg-mkdeb"
+.SH NAME
+dpkg-mkdeb \- create a deb package
+.SH SYNOPSIS
+.B dpkg-mkdeb 
+.I "[-options] svnurl|srcdir"
+.SH DESCRIPTION
+.B dpkg-mkdeb
+is part of dpkg-scripts, a collection of utilities for building 
+/usr/local-based deb packages.  
+.LP
+.B dpkg-mkdeb
+assembles source materials from a subversion URL or working directory 
+specified on the command line into a .deb package named 
+.IP
+<package>[-subpackage]_<version>_<architecture>.deb
+.LP
+The package materials must at a minimum contain a file called 
+\fIpackage.conf\fR,
+a bash script containing metadata and shell functions used to assemble 
+the package as described below in the METADATA and SHELL FUNCTIONS sections.
+.LP
+The following options may be provided to \fBdpkg-mkdeb\fR:
+.TP
+.I "-v"
+Show copy/export, build, and install output in real time.
+Default is to suppress this information and only display it on failure.
+.TP
+.I "-k"
+Preserve intermediate work directory for examination.
+.TP
+.I "-f"
+Force overwrite of an exsting deb file of the same name.
+Default is to abort.
+.TP
+.I "-t"
+By default,
+.B dpkg-mkdeb
+creates a private /usr/local during the build and populates it with
+the packages listed in PKG_BUILDREQUIRES.  The
+.I "-t"
+option disables this behavior.  This option has no effect if
+PKG_FLAGS contains ``notmproot'' (see below).
+.TP
+.I "-p package.conf" 
+Specify an alternate package.conf file.  Default is to use the one
+in svnurl or srcdir.
+.TP
+.I "-s subpackage"
+Specify the subpackage to build, if this package supports subpackages.
+See the SUBPACKAGES section below.
+.TP
+.I "-V variant"
+Specify the variant to build, if this package supports variants.
+See the VARIANTS section below.
+.TP
+.I "-q var[,var...]"
+Query information about the package.  Valid values for ``var'' are:
+``subpackages'', ``variants'', ``buildrequires'', ``name'', 
+``verison'', ``names'', and ``default''. 
+Querying ``all'' will return all of the above.
+.TP
+.I "svnurl|srcdir"
+The package source will be copied from the specified subversion URL
+or directory.  Only source originating from a subversion tag will be
+built as a release package; otherwise it will be a snapshot release with
+the date appended to the version.
+.SH "PACKAGE.CONF"
+The 
+.I package.conf 
+file may contain the following metadata:
+.TP 
+.I "PKG_NAME"
+The name of the package.  If multiple versions of the same package are
+to be installed, append a hyphen and the package version (dots allowed).
+.TP 
+.I "PKG_VERSION"
+A package version, which may be a single release number if the package
+version is appended to the name as described above.
+.TP
+.I "PKG_ARCH"
+The package architecture, which is automatically set to the 
+dpkg-architecture(1) DEB_BUILD_ARCH if omitted.
+Generally it should be omitted unless the package is
+architecture-agnostic, then set it to ``all''.
+.TP
+.I "PKG_MAINTAINER"
+Name and email of maintainer, e.g. ``Jim Garlick <garlick@llnl.gov>''.
+.TP
+.I "PKG_SHORT_DESCRIPTION"
+A few words describing the package which must fit in 
+.B "dpkg -l" 
+.TP
+.I "PKG_SECTION"
+Selects a $prefix: 
+``tools'' selects /usr/local/tools,
+``storage'' selects /usr/local/storage,
+``viz'' selects /usr/local/viz,
+``opt'' selects /usr/local/opt, and
+``root'' selects /usr/local (package does not have a private prefix).
+.TP
+.I "PKG_DEPENDS"
+List packages this package depends on, delimited by commas.
+See the descrition of ``Depends:'' in deb-control(5) for further
+details on the syntax.
+.TP
+.I "PKG_BUILDREQUIRES"
+List packages that are required to be installed when building this package,
+delimited by commas or spaces.
+If the packages have dotkits, they are "used" prior to executing pkg_build()
+and pkg_install().
+If a specific version of a package is required, ``=version_glob'' may be 
+appended to the package name, where version_glob is the required version 
+number or a bash-style glob that matches the required version number.
+.TP
+.I "PKG_CONFLICTS"
+List packages this package is in conflict with, delimited by commas.
+See the description of ``Conflicts:'' in deb-control(5) for further
+details on the syntax.
+.TP
+.I "PKG_FLAGS"
+May be set to a list of flags, delimited by spaces or commas, that affect 
+package construction. Valid flags are:
+.br
+\fBnotmproot\fR: see DIRECT INSTALLATION below;
+.br
+\fBnodk\fR: suppresses automatic dotkit generation;
+.br
+\fBdecoupledk\fR: suppresses expression of package dependencies in dotkit;
+.br
+\fBnoldpath\fR: suppresses setting LD_LIBRARY_PATH in dotkit;
+.br
+\fBdkmutex\fR: generates dotkit that unloads other versions of the package;
+.br
+\fBnodashwrap\fR: generates wrappers with no dash between command and version.
+.br
+\fBnocheckwrap\fR: suppresses checking for existence of wrapped exectuables.
+.br
+\fBverboselog\fR: causes wrappers to log command line arguments.
+.br
+\fBdkhide\fR: hides main and dflt package dotkits in \fIuse -l\fR output.
+.br
+\fBdkhidemain\fR: hides main package dotkit in \fIuse -l\fR output.
+.br
+\fBdkhidedefault\fR: hides dflt package dotkit in \fIuse -l\fR output.
+.TP
+.I "PKG_SUBPACKAGES"
+May be set to a list of subpackage names delimited by commas or spaces. 
+See the SUBPACKAGES section below.
+.TP
+.I "PKG_VARIANTS"
+May be set to a list of variant names delimited by commas or spaces. 
+See the VARIANTS section below.
+.TP
+.I "PKG_WRAPPERS"
+May be set to a list of wrapper scripts that will be created in
+/usr/local/bin.  If the package has a version number embedded in the name,
+a hyphen followed by this version (not PKG_VERSION) will be appended to 
+the wrapper name.  The wrappers use 
+.I dpkg-wrap
+to execute the wrapped
+executable with the package dotkit loaded.  In addition to loading the dotkit,
+.I dpkg-wrap
+will log each invocation of the wrapper to syslog for accounting purposes.
+.B dpkg-mkdeb
+will fail to build a deb if the executable being wrapped does not exist
+in the package's $bindir.
+If a manual page exists in section 1 of the package's $mandir for the 
+executable, a symlink to it will be created to it from /usr/local/man.
+.TP
+.I "PKG_DEFAULT"
+Causes a default package to be generated which contains symbolic links
+to the files in the main package.  PKG_DEFAULT defines the base name of
+the package.  If the original package is named ``pkg-version'', PKG_DEFAULT
+would be set to ``pkg'' and the default package would be named ``pkg''.
+Any wrapper scripts have the appended version stripped.
+.TP
+.I "PKG_DK_CATEGORY"
+Overrides the default dotkit category (#c) of local-$section.
+.TP
+.I "PKG_DK_HELP"
+Sets the dotkit help (#h) content.  If omitted, help will be omitted from
+the dotkit.  
+``\\n'' and macros will be expanded in the output, and content spanning
+multiple lines will be represented it the dotkit with multiple #h lines.
+.TP
+.I "PKG_dk"
+Override the default dotkit (see DOTKIT below).
+``\\n'' and macros will be expanded in the output.
+See DOTKIT below.
+.TP
+.I "PKG_conffiles"
+List any config files which will be allowed to change after
+package installation, one per line.
+``\\n'' and macros will be expanded in the output.
+.TP
+.I "PKG_doc"
+PKG_doc optionally lists documentation files included in the package, 
+one per line.  
+Each line has the 
+format ``Description: Path'', where Description may contain spaces.
+``\\n'' and macros will be expanded in the output.
+The dpkg-docreport(1) utility summarizes all the package 
+documentation for installed packages.
+.SH "SHELL FUNCTIONS"
+The following functions must be defined in the
+.I package.conf
+file:
+.TP
+.I "pkg_build()"
+Called in a working copy of the package repository to build
+the project in place.  For example, it might contain:
+.IP
+configure --prefix $prefix
+.br
+make all
+.IP
+This function may be empty if the package is pre-built.
+Return 0 on success, non zero on fatal error.
+Automatic error abort (set -e) is in effect.
+.TP
+.I "pkg_install()"
+Called in a working copy of the package repository after pkg_build()
+to install files into a into a temporary root directory, passed in 
+as the first argument.  The $prefix directory will already have been created.
+For example, it might contain:
+.IP
+make install DESTDIR=$1
+.IP
+Return 0 on success, non zero on fatal error.
+Automatic error abort (set -e) is in effect.
+.SH "SHELL MACROS"
+The following macros are defined for use in the 
+.I package.conf 
+shell functions:
+.TP
+.I prefix
+Path to root of install destination.
+.TP
+.I bindir
+$prefix + directory for executables.
+.TP
+.I etcdir
+$prefix + directory for configuration.
+.TP
+.I mandir
+$prefix + directory for manpages (contains section directories).
+.TP
+.I infodir
+$prefix + directory for gnu info pages.
+.TP 
+.I docdir
+$prefix + directory for misc. documentation.
+.TP
+.I sbindir
+$prefix + directory for administrative executables.
+.TP
+.I includedir
+$prefix + directory for include files.
+.TP
+.I libdir
+$prefix + directory for libraries.
+[Note we do not try to mimic the host OS's 64/32 bit library conventions,
+and instead assume a given /usr/local is 64 or 32 bit clean and simply
+use "lib"].
+.TP
+.I libexecdir
+$prefix + directory for internally-invoked executables.
+.TP
+.I srcdir
+$prefix + directory for source code.
+.TP
+.I vardir
+$prefix + directory for misc. state. 
+.TP
+.I lbindir
+Set to /usr/local/bin.
+.TP
+.I dotkitdir
+Set to /usr/local/etc/dotkit.
+.TP
+.I subpackage
+Name of the subpackage being built (selected at build time).  
+$subpackage will be set if and only if PKG_SUBPACKAGES is set.  
+See the SUBPACKAGES section below.
+.TP
+.I variant
+Name of the variant being built (selected at build time).  
+$variant will be set if and only if PKG_VARIANTS is set.  
+See the VARIANTS section below.
+.SH "DIRECT INSTALLATION"
+Most packages will install to a temporary root directory passed in
+as the first argument to the pkg_install() function in their package.conf.
+If a package cannot handle tmproot installation, add ``notmproot'' to 
+PKG_FLAGS and
+.B dpkg-mkdeb
+will use direct installation mode.  Direct installation mode utilizes 
+Linux private namespaces to privately over-mount /usr/local with a 
+writeable tmp directory.  After pkg_install() runs, the contents of 
+the tmp directory are captured.
+.LP
+Build-time dependencies listed in PKG_BUILDREQUIRES are brought into the 
+tmp directory using \fBapt-get\fR(8), and removed before the results
+are captured. 
+.LP
+Since Linux private name spaces are not portable, the use of ``notmproot''
+is discouraged for packages which may be built on other operating 
+systems.
+.SH "DOTKIT"
+The package info area in /usr/local/dpkg-db/info acts as a DK_NODE
+for installed packages.  Unless suppressed with ``nodk'' in PKG_FLAGS
+or overridden with the PKG_dk variable, a dotkit will be generated 
+automatically for the package which alters PATH, MANPATH, INFOPATH,
+and LD_LIBRARY_PATH as needed depending on presence of bin, man, info,
+or lib (if it contains shared objects) directories respectively.
+PKG_DK_CATEGORY overrides the default the dotkit category (#c) of
+local-$section as described above.  PKG_DK_HELP sets dotkit help (#h)
+as described above.  The dotkit will load the dotkits of any dependent
+packages listed in PKG_DEPENDS.  Finally, the dotkit logs when it is
+loaded and unloaded via dpkg-logger(1).
+If the ``dkmutex'' flag is set, the dotkit will try to unload all other
+versions of the same package, i.e. pkg and pkg-[0-9]*.
+If the ``noldpath'' flag is set, LD_LIBRARY_PATH will not be altered.
+.SH "UNIT TESTS"
+A script that executes unit tests on the installed package may be
+provided in a file 
+.I package.test.
+The 
+.B dpkg-runtests(1)
+utility is the test driver, which runs individual test scripts using
+the the
+.B dpkg-wrap(1)
+utility, which loads the package's dotkit and sets some environment
+variables that may be useful to the test script (e.g. $dpkg_name, 
+$dpkg_version, and $dpkg_prefix).
+The test script runs in a sandbox directory which it is free to create
+files in.  It may log diagnostic output to stdout/stderr.  It should
+exit with 0=success, 1=failure, 2=notrun.
+See 
+.B dpkg-runtests(8)
+for more information.
+.SH "SUBPACKAGES"
+It is possible to build multiple packages from a single source repo.
+In package.conf, set PKG_SUBPACKAGES to the list of possible subpackages.
+To build a subpackage, run 
+.B dpkg-mkdeb
+\fI-s subpackage\fR.  
+When package.conf is parsed, the $subpackage variable will be set to 
+the subpackage name.
+This can be tested to alter the behavior of pkg_build() and pkg_install().
+The package produced will have the subpackage name appended to the package
+name.
+.SH "VARIANTS"
+Variants are like subpackages but they affect the package version instead
+of the package name.
+To build a variant, run
+.B dpkg-mkdeb
+\fI-V variant\fR.
+When package.conf is parsed, the $variant variable will be set to 
+the variant name.
+This can be tested to alter the behavior of pkg_build() and pkg_install().
+The package produced will have the variant name appended to the version.
+.LP
+.SH "SEE ALSO"
+dpkg(1) deb-control(5) dpkg-docreport(8) dpkg-verify(8) dpkg-runtests(8)

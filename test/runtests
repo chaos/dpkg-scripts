@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+declare -r prog=runtests
+declare -r mkdeb=../dpkg-mkdeb.sh
+
+die()
+{
+    echo "${prog}: $1" >&2
+    exit 1
+}
+
+
+##
+## MAIN 
+##
+
+testsrun=0
+testspassed=0
+
+[ $(id -u) != 0 ]  || die "you must not run tests as superuser"
+umask 022
+
+packages=$@
+
+# don't depend on setuid in the source tree
+[ -x /usr/bin/dpkg-tmplocal ] || die "/usr/bin/dpkg-tmplocal not found"
+
+for pkg in ${packages}; do
+    testsrun=$((${testsrun}+1))
+
+    PKG_SHORT_DESCRIPTION="PKG_SHORT_DESCRIPTION undefined should fail"
+    PKG_RUNTESTS_MKDEB_OPTS=""
+    source ${pkg}.conf || die "failed to source ${pkg}.conf"
+    rm -f ${pkg}.deb d${pkg}.deb
+
+    echo "============== $(date) ============" >>${pkg}.out
+
+    printf "%-52s " "${pkg}: ${PKG_SHORT_DESCRIPTION}"
+
+    # ignore failure here and catch it in pkg_test
+    (${mkdeb} -S ${PKG_RUNTESTS_MKDEB_OPTS} -x ${mkdeb} -p ${pkg}.conf -m ${pkg}.meta -o ${pkg}.deb -O d${pkg}.deb .) >>${pkg}.out 2>&1
+
+    if ! (pkg_test ${pkg}.deb d${pkg}.deb) >>${pkg}.out 2>&1; then
+        printf "test failed - see ${pkg}.out\n"
+        continue
+    fi
+
+    printf "passed\n"
+    rm -f ${pkg}.deb d${pkg}.deb ${pkg}.out
+    testspassed=$((${testspassed}+1))
+done
+
+echo "Tests passed: ${testspassed} / ${testsrun}"
+exit $((${testsrun}-${testspassed}))
+
+# vi: expandtab sw=4 ts=4

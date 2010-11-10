@@ -1,0 +1,27 @@
+Test Architecture
+
+The 'runtests' script is the test driver.  It is called by the 'make check'
+target with all of the available tests passed in as arguments.  Successful
+tests leave no trace, but each failed test leaves a log file and causes
+a nonzero exit code from runtests after all tests have completed.
+A summary of pass / attempted tests is displayed at the end of runtests.
+The PKG_SHORT_DESCRIPTION field in the package.conf provides a summary
+of the test which is displayed by runtests as it runs along.
+
+Each test is self-contained in a package.conf named for the test number.
+A special function pkg_test() shell function is provided by each package.conf.
+The runtests script first sources the test's package.conf so it can display
+the summary description, then it runs dpkg-mkdeb on the package.conf 
+(ignoring failures), then it invokes the pkg_test() function with $1 set
+to what should be the main deb filename, and $2 = the default deb filename.
+The pkg_test() ascertains whether the deb file was successfully built, or
+appropriately not built, and may check other things about the deb file(s)
+depending on the test.  If the test is successful, pkg_test() returns 0.
+A nonzero return value indicates test failure.
+
+At the moment we invoke dpkg-mkdeb.sh from the source tree, but since
+dpkg-tmplocal requires setuid root privileges, we use one out in your PATH
+if available, otherwise abort.
+
+In order to call dpkg-mkdeb with non-standard arguments, the
+PKG_RUNTESTS_MKDEB_OPTS variable may be set in the package.conf.

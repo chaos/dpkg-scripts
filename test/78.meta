@@ -1,0 +1,6 @@
+ Name:         mvapich
+ Version:      0.9.9
+ Release:      1760.5chaos
+ Author:       The Ohio State University <mvapich-discuss@cse.ohio-state.edu>
+ Pre_Exec:     find . -type f -name mpich*.spec -exec rm {} \;
+

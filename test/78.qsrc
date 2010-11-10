@@ -1,0 +1,9 @@
+name: mvapich-0.9.9
+version: 1760.5chaos
+basename: mvapich
+basever: 0.9.9
+subpackages: gnu gnu-debug intel pgi pathscale
+variants: shmem gen2
+buildrequires: pathscale=default-3.0* pgi=default-7.0.6* icc=default-9.1.052* ifort=default-9.1.052*
+names: mvapich-gnu-0.9.9_1760.5chaos mvapich-gnu-debug-0.9.9_1760.5chaos mvapich-intel-0.9.9_1760.5chaos mvapich-pgi-0.9.9_1760.5chaos mvapich-pathscale-0.9.9_1760.5chaos
+default: mvapich-gnu_default-0.9.9-1760.5chaos mvapich-gnu-debug_default-0.9.9-1760.5chaos mvapich-intel_default-0.9.9-1760.5chaos mvapich-pgi_default-0.9.9-1760.5chaos mvapich-pathscale_default-0.9.9-1760.5chaos

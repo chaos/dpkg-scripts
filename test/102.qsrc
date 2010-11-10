@@ -1,0 +1,9 @@
+name: x-1.2
+version: 1
+basename: x
+basever: 1.2
+subpackages:
+variants:
+buildrequires:
+names: x-1.2_1
+default:

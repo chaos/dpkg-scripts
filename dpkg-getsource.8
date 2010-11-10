@@ -1,0 +1,29 @@
+.TH dpkg-getsource 8 "Release 1.0" "LLNL" "dpkg-getsource"
+.SH NAME
+dpkg-getsource \- get source for installed package from subversion
+.SH SYNOPSIS
+.B dpkg-getsource
+.I "package"
+.SH DESCRIPTION
+.B dpkg-getsource
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-getsource
+copies the the source for an installed package from the subversion
+URL recorded at package build time to a directory whose name is derived 
+from the last component of the subversion URL.  The directory must not 
+exist before 
+.B dpkg-getsource
+is run.
+.LP
+You must have read access to the subversion URL directory in order 
+for the subversion export to succeed.
+.LP
+.B dpkg-getsource
+requires that the source be a subversion tag, and thus refuses to work
+on snapshot or edited debs.
+.SH "FILES"
+/usr/local/dpkg-db/info/*.buildinfo
+.SH "SEE ALSO"
+svn(1) dpkg-mkdeb(8) 

@@ -1,0 +1,45 @@
+.TH dpkg-verify 8 "Release 1.0" "LLNL" "dpkg-verify"
+.SH NAME
+dpkg-verify \- verify installed package integrity
+.SH SYNOPSIS
+.B dpkg-verify
+.I "[--md5sums] [package-glob] ..."
+.br
+.B dpkg-verify 
+.I "--unpackaged"
+.SH DESCRIPTION
+.B dpkg-verify
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-verify
+verifies installed files against package metadata to detect modification
+or corruption since installation.
+This includes checking that all files are still installed,
+verification of files against their md5sums
+(with the \fI--md5sums\fR option), and 
+verification of symbolic link targets.  
+Changes detected in files designated config files are not reported.
+.LP
+In addition, the following problems are flagged:
+dangling symbolic links,
+files/directories with owner:group other than root:root 
+(or owner:owner if /usr/local is privately owned),
+files/directories with modes that grant too restrictive access to other/group,
+and files/directories with modes that grant too permissive access to 
+other/group.
+.LP
+If no packages are listed on the command line, all installed packages 
+are verified.
+.LP
+The following options are supported by \fBdpkg-verify\fR:
+.TP
+\fI-u\fR, \fI--unpackaged\fR
+Report unpackaged files in /usr/local, omitting the directories 
+/usr/local/dpkg-db and /usr/local/var.
+.TP
+\fI-m\fR, \fI--md5sums\fR
+Verify each file against its md5sum.  Since this requires that every file
+be read, this can be time consuming.
+.SH SEE ALSO
+dpkg(1)

@@ -1,0 +1,43 @@
+.TH dpkg-lndir 8 "Release 1.0" "LLNL" "dpkg-tmplocal"
+.SH NAME
+dpkg-lndir \- create a shadow tree of symlinks to another directory
+.SH SYNOPSIS
+.B dpkg-lndir 
+.I fromroot
+.I fromdir 
+.I toroot
+.I todir
+.SH DESCRIPTION
+.B dpkg-lndir
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+The
+.B dpkg-lndir
+program makes  a  shadow  copy  
+.I todir  
+of  a  directory  tree
+.I fromdir,  
+except  that  the shadow is not populated with real files but
+instead with symbolic links pointing at the real files in  the  
+.I fromdir
+directory tree. 
+.I fromdir 
+is rooted in
+.I fromroot,
+and
+.I todir 
+is rooted in 
+.I toroot,
+but the symbolic link targets have
+.I toroot
+stripped off so they will work once
+.I fromdir
+is installed in the real system root.
+.LP
+.B dpkg-lndir
+is a helper for 
+.B dpkg-mkdeb
+which uses it during the creation of default packages.
+.SH "SEE ALSO"
+lndir(1), dpkg-mkdeb(8)

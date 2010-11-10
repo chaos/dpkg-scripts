@@ -1,0 +1,9 @@
+name: test-2.4
+version: 1
+basename: test
+basever: 2.4
+subpackages:
+variants:
+buildrequires:
+names: test-2.4_1
+default: test_default-2.4-1

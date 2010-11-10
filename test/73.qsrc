@@ -1,0 +1,9 @@
+name: memcheckview-3.2.3
+version: 1
+basename: memcheckview
+basever: 3.2.3
+subpackages:
+variants:
+buildrequires:
+names: memcheckview-3.2.3_1
+default: memcheckview_default-3.2.3-1

@@ -1,0 +1,9 @@
+name: test
+version: 1
+basename: test
+basever:
+subpackages: foo bar
+variants:
+buildrequires:
+names: test-foo_1 test-bar_1
+default:

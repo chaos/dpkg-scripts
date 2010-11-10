@@ -1,0 +1,21 @@
+.TH dpkg-wrap 8 "Release 1.0" "LLNL" "dpkg-wrap"
+.SH NAME
+dpkg-wrap \- execute packaged programs in their dotkit environment
+.SH SYNOPSIS
+.B dpkg-wrap
+.I "[package]"
+.I "cmd"
+.I "[args]..."
+.SH DESCRIPTION
+.B dpkg-wrap
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-wrap
+loads the dotkit for \fIpackage\fR, runs \fIcmd\fR,
+then logs the package name, package version, user id, and command
+to syslog local7.info.  If the package has the
+.B "verboselog" 
+flag set in PKG_FLAGS, the command arguments will also be logged.
+.SH SEE ALSO
+dpkg(1), dpkg-mkdeb(8)

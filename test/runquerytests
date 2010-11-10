@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+declare -r prog=runtests
+declare -r mkdeb=../dpkg-mkdeb.sh
+sopt=0
+
+die()
+{
+    echo "${prog}: $1" >&2
+    exit 1
+}
+
+
+##
+## MAIN 
+##
+
+if [ $# -gt 0 ] && [ $1 = '-s' ];then
+    sopt=1
+    shift
+fi
+
+testsrun=0
+testspassed=0
+
+[ $(id -u) != 0 ]  || die "you must not run tests as superuser"
+umask 022
+
+packages=$@
+
+# don't depend on setuid in the source tree
+[ -x /usr/bin/dpkg-tmplocal ] || die "/usr/bin/dpkg-tmplocal not found"
+
+for pkg in ${packages}; do
+
+    PKG_SHORT_DESCRIPTION="PKG_SHORT_DESCRIPTION undefined should fail"
+    source ${pkg}.conf || die "failed to source ${pkg}.conf"
+
+    if [ ${sopt} = 1 ]; then
+        ${mkdeb} -S -p ${pkg}.conf -m ${pkg}.meta -q all . >${pkg}.qsrc 2>/dev/null
+    else
+        testsrun=$((${testsrun}+1))
+        printf "%-52s " "${pkg}: ${PKG_SHORT_DESCRIPTION}"
+        ${mkdeb} -S -p ${pkg}.conf -m ${pkg}.meta -q all . >${pkg}.qtry 2>/dev/null
+        if ! diff ${pkg}.qsrc ${pkg}.qtry >${pkg}.diff; then
+            printf "test failed - see ${pkg}.diff\n"
+            continue
+        fi
+        printf "passed\n"
+        testspassed=$((${testspassed}+1))
+    fi
+    rm -f ${pkg}.qtry ${pkg}.diff
+done
+
+echo "Tests passed: ${testspassed} / ${testsrun}"
+exit $((${testsrun}-${testspassed}))
+
+# vi: expandtab sw=4 ts=4

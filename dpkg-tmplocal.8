@@ -1,0 +1,70 @@
+.TH dpkg-tmplocal 8 "Release 1.0" "LLNL" "dpkg-tmplocal"
+.SH NAME
+dpkg-tmplocal \- run process with private copy of /usr/local
+.SH SYNOPSIS
+.B dpkg-tmplocal
+.I "[-v|-p]"
+.I "[-d directory]"
+.I "cmd [arg] ..."
+.SH DESCRIPTION
+.B dpkg-tmplocal
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-tmplocal
+creates a unique, empty temporary directory owned by the invoking user,
+binds it over the top of /usr/local in a private namespace,
+and runs the specified command in that environment.
+With no options, the environment and the temporary directory are 
+destroyed when the command terminates.
+.LP
+.B dpkg-tmplocal's
+default behavior can be modified as follows:
+.TP
+\fI-v\fR, \fI--verbose\fR
+Report each step as it is performed.
+.TP
+\fI-p\fR, \fI--preserve\fR
+Do not remove the temporary directory after the command completes.
+Use \fI--verbose\fR to see the name of the temporary directory as it is created.
+.TP
+\fI-d\fR, \fI--dir\fR directory
+Bind a pre-existing directory on /usr/local.  Implies \fI--preserve\fR.
+.TP
+\fI-o\fR, \fI--slash-opt\fR
+Bind on /opt instead of /usr/local.
+.SH APPLICATIONS
+.B dpkg-tmplocal
+was originally designed as a helper for 
+.B dpkg-mkdeb
+which uses it during package creation when the software being
+packaged must be installed directly into /usr/local instead of to an 
+intermediate directory.  It also builds packages in a temporary 
+local popluated only its PKG_BUILDREQUIRES packages to ensure they
+are properly specified.
+.LP
+.B dpkg-tmplocal
+is used by 
+.B dpkg-testdeb
+for running a package's unit tests in a temporary /usr/local containing
+only its PKG_DEPENDS packages.
+.LP
+Finally,
+.B dpkg-tmplocal
+may be used to create a sandbox /usr/local for manual testing and development
+of packages.  For example:
+.IP
+.nf
+dpkg-tmplocal /bin/bash
+$ dpkg-tmplocal -v /bin/bash
+dpkg-tmplocal: binding /tmp/tmplocal-jPK0OB on /usr/local
+dpkg-tmplocal: dropping root privileges
+dpkg-tmplocal: execing /bin/bash
+$ dpkg-initialize
+$ dpkg -i --force-not-root pkg.deb
+$ ...
+$ exit
+dpkg-tmplocal: removing /tmp/tmplocal-jPK0OB
+.fi
+.SH "SEE ALSO"
+dpkg-mkdeb(8), dpkg-testdeb(8)

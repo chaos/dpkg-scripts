@@ -1,0 +1,90 @@
+.TH dpkg-runtests 8 "Release 1.0" "LLNL" "dpkg-runtests"
+.SH NAME
+dpkg-runtests \- run package unit tests
+.SH SYNOPSIS
+.B dpkg-runtests
+.I "[package] ..."
+.SH DESCRIPTION
+.B dpkg-runtests
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-runtests
+runs package unit tests for the specified packages.
+If no packages are specified on the command line, all installed packages 
+are tested.
+.LP
+.B dpkg-runtests
+accepts the following options
+.TP
+.I "-v"
+Show test output if it fails.
+.TP
+.I "-V"
+Show test output even when it succedes.
+.LP
+.B dpkg-runtests
+exits with 1 if
+.B dpkg-runtests
+itself failed, 2 if there were any test failures, or 0 if there were 
+no failures, even if test results include ``notest'' or ``notrun''.
+.SH TEST SCRIPTS
+A test script will be included in a package if it exists under the 
+name ``package.test'' in the package source materials during a 
+.B dpkg-mkdeb(1)
+build.  When the package is installed, the test is installed as part of
+the package's metadata.
+.LP
+Test scripts are run with their current working directory set to a clean
+subdirectory of /tmp and their output redirected to the file ``test.log''
+inside that directory.
+The directory is removed on success, or retained for examination
+otherwise.
+.LP
+The scripts' exit codes are used to determine the result: 0=success, 1=notrun,
+2=failure.  All scripts should complete relatively quickly and not
+include interactive or GUI components.  
+.LP
+The test is run via
+.B dpkg-wrap
+so the package's dotkit is used and the package's macro file will have been
+sourced, therefore the test script should be able to run the package's 
+executables just as a user would, and may reference any of the following
+macro file variables:
+.LP
+$dpkg_name
+.br
+$dpkg_version
+.br
+$dpkg_arch
+.br
+$dpkg_maintainer
+.br
+$dpkg_short_description
+.br
+$dpkg_section
+.br
+$dpkg_depends
+.br
+$dpkg_buildrequires
+.br
+$dpkg_flags
+.br
+$dpkg_prefix
+.br
+$dpkg_subpackages
+.br
+$dpkg_subpackage
+.br
+$dpkg_variants
+.br
+$dpkg_variant
+.LP
+It is possible to unuse the package dotkit inside the test script with
+the command ``unuse $dpkg_name''.  This may be useful in a compiler test,
+for example, to check behavior of compiler executables run without the 
+compiler's dotkit environment.
+.SH "FILES"
+/usr/local/dpkg-db/info/package-name.test
+.SH "SEE ALSO"
+dpkg-mkdeb(8), dpkg-testdeb(8)

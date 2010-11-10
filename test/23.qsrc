@@ -1,0 +1,9 @@
+name: test-1.2
+version: 1_1
+basename: test
+basever: 1.2
+subpackages:
+variants:
+buildrequires:
+names:
+default:

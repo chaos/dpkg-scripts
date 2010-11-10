@@ -1,0 +1,9 @@
+name: x
+version: 1
+basename: x
+basever:
+subpackages:
+variants:
+buildrequires:
+names: _1
+default: _default--1

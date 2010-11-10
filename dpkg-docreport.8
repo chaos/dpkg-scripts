@@ -1,0 +1,20 @@
+.TH dpkg-docreport 8 "Release 1.0" "LLNL" "dpkg-docreport"
+.SH NAME
+dpkg-docreport \- generate web page summarizing package docs
+.SH SYNOPSIS
+.B dpkg-docreport
+.SH DESCRIPTION
+.B dpkg-docreport
+is part of dpkg-scripts, a collection of utilities for building
+/usr/local-based deb packages.
+.LP
+.B dpkg-docreport
+builds a web page containing a table of package descriptions and 
+documentation references for installed packages.  It should be periodically
+run as root so it is kept up to date as packages are updated.
+.SH "FILES"
+/usr/local/dpkg-db/info/*.doc
+.br
+/usr/local/dpkg-db/doc.html
+.SH "SEE ALSO"
+dpkg-mkdeb(8)

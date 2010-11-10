@@ -1,0 +1,5 @@
+* moody-plugins (also see pkg-config?)
+* modules support?
+* slocate rebuild after pkg install?
+* way to put other things in default packages than ${prefix} mirror, wrappers
+man pages
