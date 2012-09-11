@@ -462,7 +462,7 @@ query_vars ()
     local var result
 
     if [ "$1" = "all" ]; then
-        set - "name version basename basever subpackages variants buildrequires names default"
+        set - "name version basename basever subpackages variants buildrequires names default maintainer"
     fi
     for var in $*; do
         case ${var} in
@@ -475,6 +475,7 @@ query_vars ()
             basename)      result=$(get_pkg_basename) ;;
             basever)       result=$(get_pkg_basever) ;;
             default)       result=$(list_pkg_names -d) ;;
+            maintainer)    result=$(get_pkg_var PKG_MAINTAINER) ;;
             *) die "unknown field '${var}'" ;;
         esac
         echo ${var}: ${result}
