@@ -1,3 +1,11 @@
+2012-09-12 Mark A. Grondona <mgrondona@llnl.gov>
+
+	* : tag 1.67
+
+	* tests/* : Update query tests to check for package maintainer.
+
+	* dpkg-mkdeb.sh : Add package maintainer to list of query items.
+
 2009-04-17 Jim Garlick <garlick@llnl.gov>
 
 	* : tag 1.66
