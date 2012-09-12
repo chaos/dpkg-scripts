@@ -7,3 +7,4 @@ variants:
 buildrequires:
 names: x-2.1_1
 default: x_default-2.1-1
+maintainer: Test

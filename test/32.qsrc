@@ -7,3 +7,4 @@ variants:
 buildrequires:
 names: test-foo_1 test-bar_1
 default:
+maintainer: Test

@@ -7,3 +7,4 @@ variants:
 buildrequires:
 names: test_1
 default:
+maintainer: Test

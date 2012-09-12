@@ -7,3 +7,4 @@ variants:
 buildrequires:
 names: foo-x-4.2_1 foo-y-4.2_1
 default:
+maintainer: Test

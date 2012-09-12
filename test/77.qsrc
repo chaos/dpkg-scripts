@@ -7,3 +7,4 @@ variants:
 buildrequires:
 names: papi-4.2_1
 default:
+maintainer: me

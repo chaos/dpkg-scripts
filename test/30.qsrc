@@ -7,3 +7,4 @@ variants:
 buildrequires:
 names: test-2.4_1
 default: test_default-2.4-1
+maintainer: Test

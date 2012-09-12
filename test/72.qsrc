@@ -7,3 +7,4 @@ variants:
 buildrequires:
 names: fftw-3.1.2_1
 default: fftw_default-3.1.2-1
+maintainer: Test

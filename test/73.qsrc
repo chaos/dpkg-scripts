@@ -7,3 +7,4 @@ variants:
 buildrequires:
 names: memcheckview-3.2.3_1
 default: memcheckview_default-3.2.3-1
+maintainer: Test
