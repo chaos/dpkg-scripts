@@ -2,6 +2,9 @@
 
 This page describes how to use the dpkg-scripts packaging system.
 
+_Note that dpkg-scripts is no longer in use.  This repo is not maintained
+and exists for historical purposes only._
+
 ## Motivation
 
 Although packaging /usr/local introduces additional process for software
